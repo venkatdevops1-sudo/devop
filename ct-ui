@@ -1,0 +1,57 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ct-ui
+  namespace: command-center
+  labels:
+    app: command-center
+    component: ct-ui
+    tier: UI
+    workflow: actions.github.com-k8s-deploy
+    workflowFriendlyName: Deploy_to_Kubernetes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command-center
+      component: ct-ui
+      tier: UI
+  template:
+    metadata:
+      labels:
+        app: command-center
+        component: ct-ui
+        tier: UI
+    spec:
+      containers:
+        - name: ct-ui
+          image: dfdpacr.azurecr.io/ct-ui:v6  # Make sure the image version is correct
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 400m
+              memory: 400Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        pool: ccuipool  # Make sure the node pool exists in your new environment
+      securityContext: {}
+      imagePullSecrets:
+        - name: dfdpcred  # Ensure the secret for pulling the image exists in your new namespace
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
