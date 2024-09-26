@@ -39,7 +39,10 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
           securityContext:
-            readOnlyRootFilesystem: true  
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -51,6 +54,9 @@ spec:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
           effect: "NoSchedule"
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
   strategy:
     type: RollingUpdate
     rollingUpdate:
