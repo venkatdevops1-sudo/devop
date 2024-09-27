@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cc-config
+  namespace: command-center
+data:
+  REACT_APP_CT_API_BASE_URL: "https://command-center.eastus.cloudapp.azure.com/ct-api/api/v1/"
+  REACT_APP_DAAS_API_BASE_URL: "https://command-center.eastus.cloudapp.azure.com/daas-api/api/v1"
+  REACT_APP_GIT_HUB_CONFIG_DATA_MODEL_ID: "918a824b-5739-40e0-a3c5-378b7d0277cf"
+  REACT_APP_CC_GENAI_API_BASE_URL: "https://command-center.eastus.cloudapp.azure.com/genai/api/genai/prompt/"
