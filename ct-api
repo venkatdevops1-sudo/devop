@@ -1,0 +1,88 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ct-api
+  namespace: command-center
+  labels:
+    app: command-center
+    component: ct-api
+    tier: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command-center
+      component: ct-api
+      tier: api
+  template:
+    metadata:
+      labels:
+        app: command-center
+        component: ct-api
+        tier: api
+    spec:
+      containers:
+        - name: ct-api
+          image: dfdpacr.azurecr.io/ct-api:v6
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: CT_SQL_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: CT_SQL_SERVER_URL
+            - name: CT_CONNECTIONTYPE
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: CT_CONNECTIONTYPE
+            - name: Auth__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: Auth__ClientSecret
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+            - name: Auth__Provider
+              value: EntraID
+            - name: Auth__Protocol
+              value: JWT
+            - name: Auth__Authority
+              value: >-
+                https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/
+            - name: Auth__ClientId
+              value: c052b66c-0334-4a02-bdc7-a8b601aeb2cb
+            - name: Auth__Audiences__0
+              value: api://c052b66c-0334-4a02-bdc7-a8b601aeb2cb
+            - name: Auth__Issuers__0
+              value: https://sts.windows.net/16f5f358-437f-4d93-875b-01c41113fcf4/
+            - name: Auth__TenantId
+              value: 16f5f358-437f-4d93-875b-01c41113fcf4
+          resources:
+            limits:
+              cpu: 400m
+              memory: 400Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        pool: ccuipool
+      securityContext: {}
+      imagePullSecrets:
+        - name: dfdpcred
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
