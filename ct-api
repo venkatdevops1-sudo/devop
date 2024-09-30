@@ -80,7 +80,7 @@ spec:
                   - key: kubernetes.azure.com/agentpool
                     operator: In
                     values:
-                      - agentpool  # Your preferred node pool
+                      - agentpool
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
