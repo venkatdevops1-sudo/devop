@@ -8,7 +8,7 @@ metadata:
     component: ct-api
     tier: api
 spec:
-  automountServiceAccountToken: false  # Prevents automounting the service account token
+  automountServiceAccountToken: false
   replicas: 1
   selector:
     matchLabels:
@@ -71,9 +71,10 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
           securityContext:
-            runAsNonRoot: true  # Ensure non-root execution
-            runAsUser: 1000     # Specify non-root user ID
             readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false   # Add this to disable privilege escalation
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
