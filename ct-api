@@ -1,3 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ct-api
+  namespace: command-center
+  labels:
+    app: command-center
+    component: ct-api
+    tier: api
 spec:
   replicas: 1
   selector:
@@ -41,8 +50,7 @@ spec:
             - name: Auth__Protocol
               value: JWT
             - name: Auth__Authority
-              value: >-
-                https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/
+              value: https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/
             - name: Auth__ClientId
               value: c052b66c-0334-4a02-bdc7-a8b601aeb2cb
             - name: Auth__Audiences__0
