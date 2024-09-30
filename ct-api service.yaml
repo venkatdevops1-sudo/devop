@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ct-api-service
+  namespace: command-center
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: command-center
+    component: ct-api
+    tier: api
+  type: ClusterIP
+  sessionAffinity: None
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  internalTrafficPolicy: Cluster
