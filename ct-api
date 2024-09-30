@@ -21,6 +21,7 @@ spec:
         component: ct-api
         tier: api
     spec:
+      automountServiceAccountToken: false  
       containers:
         - name: ct-api
           image: dfdpacr.azurecr.io/ct-api:v6
@@ -67,6 +68,8 @@ spec:
             requests:
               cpu: 200m
               memory: 200Mi
+          securityContext:
+            readOnlyRootFilesystem: true  
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always
@@ -75,7 +78,6 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         pool: ccuipool
-      securityContext: {}
       imagePullSecrets:
         - name: dfdpcred
       schedulerName: default-scheduler
