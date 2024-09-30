@@ -8,6 +8,7 @@ metadata:
     component: ct-api
     tier: api
 spec:
+  automountServiceAccountToken: false  # Prevents automounting the service account token
   replicas: 1
   selector:
     matchLabels:
@@ -21,7 +22,6 @@ spec:
         component: ct-api
         tier: api
     spec:
-      automountServiceAccountToken: false  # Correct placement
       containers:
         - name: ct-api
           image: dfdpacr.azurecr.io/ct-api:ck1
@@ -71,7 +71,19 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
           securityContext:
+            runAsNonRoot: true  # Ensure non-root execution
+            runAsUser: 1000     # Specify non-root user ID
             readOnlyRootFilesystem: true
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: kubernetes.azure.com/agentpool
+                    operator: In
+                    values:
+                      - agentpool
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
