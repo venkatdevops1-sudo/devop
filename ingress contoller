@@ -25,8 +25,7 @@ spec:
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.11.2
     spec:
-      serviceAccountName: ingress-nginx
-      automountServiceAccountToken: true  # Set this to true
+      automountServiceAccountToken: true  # Set to true to allow token automounting
       containers:
       - name: controller
         image: "registry.k8s.io/ingress-nginx/controller:v1.11.2"
@@ -53,8 +52,8 @@ spec:
             cpu: 100m
             memory: 90Mi
           limits:
-            cpu: 200m    # Add limits as required by policy
-            memory: 128Mi
+            cpu: 200m
+            memory: 128Mi  # Ensure limits are specified
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -62,14 +61,20 @@ spec:
               - NET_BIND_SERVICE
             drop:
               - ALL
+          readOnlyRootFilesystem: true  # Ensure root filesystem is read-only
           runAsNonRoot: true
           runAsUser: 101
-          readOnlyRootFilesystem: true  # Set this to true to comply with policy
         volumeMounts:
-        - name: webhook-cert
-          mountPath: /usr/local/certificates/
+        - mountPath: /usr/local/certificates/
+          name: webhook-cert
           readOnly: true
       volumes:
       - name: webhook-cert
         secret:
           secretName: ingress-nginx-admission
+          defaultMode: 420
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: ingress-nginx
+      securityContext: {}
