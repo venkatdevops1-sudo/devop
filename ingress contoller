@@ -25,7 +25,7 @@ spec:
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.11.2
     spec:
-      automountServiceAccountToken: false  # Set to false based on ct-api deployment
+      automountServiceAccountToken: false
       containers:
       - name: controller
         image: "registry.k8s.io/ingress-nginx/controller:v1.11.2"
@@ -78,4 +78,4 @@ spec:
       terminationGracePeriodSeconds: 30
       serviceAccountName: ingress-nginx
       imagePullSecrets:
-      - name: <your-image-pull-secret> # Use if necessary
+      - name: acr-secret
