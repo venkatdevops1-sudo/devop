@@ -1,181 +1,14 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
-  uid: 71d3f871-c722-4bc9-b1f5-07d964b89b96
-  resourceVersion: '5820720'
-  generation: 3
-  creationTimestamp: '2024-10-01T11:24:44Z'
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
     app.kubernetes.io/version: 1.11.2
-  annotations:
-    deployment.kubernetes.io/revision: '3'
-  managedFields:
-    - manager: kubectl-client-side-apply
-      operation: Update
-      apiVersion: apps/v1
-      time: '2024-10-01T11:24:44Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:labels:
-            .: {}
-            f:app.kubernetes.io/component: {}
-            f:app.kubernetes.io/instance: {}
-            f:app.kubernetes.io/name: {}
-            f:app.kubernetes.io/part-of: {}
-            f:app.kubernetes.io/version: {}
-        f:spec:
-          f:progressDeadlineSeconds: {}
-          f:replicas: {}
-          f:revisionHistoryLimit: {}
-          f:selector: {}
-          f:strategy:
-            f:rollingUpdate:
-              .: {}
-              f:maxSurge: {}
-            f:type: {}
-          f:template:
-            f:metadata:
-              f:labels:
-                .: {}
-                f:app.kubernetes.io/component: {}
-                f:app.kubernetes.io/instance: {}
-                f:app.kubernetes.io/name: {}
-                f:app.kubernetes.io/part-of: {}
-                f:app.kubernetes.io/version: {}
-            f:spec:
-              f:containers:
-                k:{"name":"controller"}:
-                  .: {}
-                  f:args: {}
-                  f:imagePullPolicy: {}
-                  f:name: {}
-                  f:ports:
-                    .: {}
-                    k:{"containerPort":80,"protocol":"TCP"}:
-                      .: {}
-                      f:containerPort: {}
-                      f:name: {}
-                      f:protocol: {}
-                    k:{"containerPort":443,"protocol":"TCP"}:
-                      .: {}
-                      f:containerPort: {}
-                      f:name: {}
-                      f:protocol: {}
-                    k:{"containerPort":8443,"protocol":"TCP"}:
-                      .: {}
-                      f:containerPort: {}
-                      f:name: {}
-                      f:protocol: {}
-                  f:resources:
-                    .: {}
-                    f:requests:
-                      .: {}
-                      f:cpu: {}
-                      f:memory: {}
-                  f:securityContext:
-                    .: {}
-                    f:allowPrivilegeEscalation: {}
-                    f:capabilities:
-                      .: {}
-                      f:add: {}
-                      f:drop: {}
-                    f:runAsNonRoot: {}
-                    f:runAsUser: {}
-                  f:terminationMessagePath: {}
-                  f:terminationMessagePolicy: {}
-                  f:volumeMounts:
-                    .: {}
-                    k:{"mountPath":"/usr/local/certificates/"}:
-                      .: {}
-                      f:mountPath: {}
-                      f:name: {}
-                      f:readOnly: {}
-              f:dnsPolicy: {}
-              f:restartPolicy: {}
-              f:schedulerName: {}
-              f:securityContext: {}
-              f:serviceAccount: {}
-              f:serviceAccountName: {}
-              f:volumes:
-                .: {}
-                k:{"name":"webhook-cert"}:
-                  .: {}
-                  f:name: {}
-                  f:secret:
-                    .: {}
-                    f:defaultMode: {}
-                    f:secretName: {}
-    - manager: Mozilla
-      operation: Update
-      apiVersion: apps/v1
-      time: '2024-10-01T13:07:12Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:spec:
-          f:strategy:
-            f:rollingUpdate:
-              f:maxUnavailable: {}
-          f:template:
-            f:spec:
-              f:automountServiceAccountToken: {}
-              f:containers:
-                k:{"name":"controller"}:
-                  f:image: {}
-                  f:resources:
-                    f:limits:
-                      .: {}
-                      f:cpu: {}
-                      f:memory: {}
-                  f:securityContext:
-                    f:readOnlyRootFilesystem: {}
-              f:terminationGracePeriodSeconds: {}
-    - manager: kube-controller-manager
-      operation: Update
-      apiVersion: apps/v1
-      time: '2024-10-01T13:07:12Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            .: {}
-            f:deployment.kubernetes.io/revision: {}
-        f:status:
-          f:conditions:
-            .: {}
-            k:{"type":"Available"}:
-              .: {}
-              f:lastTransitionTime: {}
-              f:lastUpdateTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-            k:{"type":"Progressing"}:
-              .: {}
-              f:lastTransitionTime: {}
-              f:lastUpdateTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-            k:{"type":"ReplicaFailure"}:
-              .: {}
-              f:lastTransitionTime: {}
-              f:lastUpdateTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-          f:observedGeneration: {}
-          f:unavailableReplicas: {}
-      subresource: status
 spec:
   replicas: 1
   selector:
@@ -185,7 +18,6 @@ spec:
       app.kubernetes.io/name: ingress-nginx
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app.kubernetes.io/component: controller
         app.kubernetes.io/instance: ingress-nginx
@@ -193,107 +25,51 @@ spec:
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.11.2
     spec:
-      volumes:
-        - name: webhook-cert
-          secret:
-            secretName: ingress-nginx-admission
-            defaultMode: 420
-      containers:
-        - name: controller
-          image: registry.k8s.io/ingress-nginx/controller:v1.11.2
-          args:
-            - /nginx-ingress-controller
-            - '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller'
-            - '--election-id=ingress-nginx-leader'
-            - '--controller-class=k8s.io/ingress-nginx'
-            - '--ingress-class=nginx'
-            - '--configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
-            - '--validating-webhook=:8443'
-            - '--validating-webhook-certificate=/usr/local/certificates/cert'
-            - '--validating-webhook-key=/usr/local/certificates/key'
-            - '--enable-metrics=false'
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
-            - name: webhook
-              containerPort: 8443
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 200m
-              memory: 128Mi
-            requests:
-              cpu: 100m
-              memory: 90Mi
-          volumeMounts:
-            - name: webhook-cert
-              readOnly: true
-              mountPath: /usr/local/certificates/
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            capabilities:
-              add:
-                - NET_BIND_SERVICE
-              drop:
-                - ALL
-            runAsUser: 101
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
       serviceAccountName: ingress-nginx
-      serviceAccount: ingress-nginx
-      automountServiceAccountToken: true
-      securityContext: {}
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
-status:
-  observedGeneration: 3
-  unavailableReplicas: 2
-  conditions:
-    - type: ReplicaFailure
-      status: 'True'
-      lastUpdateTime: '2024-10-01T11:24:44Z'
-      lastTransitionTime: '2024-10-01T11:24:44Z'
-      reason: FailedCreate
-      message: >-
-        admission webhook "validation.gatekeeper.sh" denied the request:
-        [azurepolicy-k8sazurev2blockautomounttoken-cb3d0dc1264514802946]
-        Automounting service account token is disallowed, pod:
-        ingress-nginx-controller-84bfc8679-tvg64
-
-        [azurepolicy-k8sazurev3readonlyrootfilesyst-3fa09ce058ca6f6ad440]
-        Readonly root filesystem is required for container.
-        pod:'ingress-nginx-controller-84bfc8679-tvg64', container:'controller'
-
-        [azurepolicy-k8sazurev3containerlimits-8e88c8de64968bc7d828] container
-        <controller> has no resource limits
-
-        [azurepolicy-k8sazurev3containerlimits-f339c7e8fa347d8d4b2e] container
-        <controller> has no resource limits
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2024-10-01T13:07:12Z'
-      lastTransitionTime: '2024-10-01T13:07:12Z'
-      reason: NewReplicaSetCreated
-      message: Created new replica set "ingress-nginx-controller-54f684d8"
-    - type: Available
-      status: 'False'
-      lastUpdateTime: '2024-10-01T13:07:12Z'
-      lastTransitionTime: '2024-10-01T13:07:12Z'
-      reason: MinimumReplicasUnavailable
-      message: Deployment does not have minimum availability.
+      automountServiceAccountToken: true  # Set this to true
+      containers:
+      - name: controller
+        image: "registry.k8s.io/ingress-nginx/controller:v1.11.2"
+        args:
+        - /nginx-ingress-controller
+        - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
+        - --election-id=ingress-nginx-leader
+        - --controller-class=k8s.io/ingress-nginx
+        - --ingress-class=nginx
+        - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller
+        - --validating-webhook=:8443
+        - --validating-webhook-certificate=/usr/local/certificates/cert
+        - --validating-webhook-key=/usr/local/certificates/key
+        - --enable-metrics=false
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        - containerPort: 8443
+          name: webhook
+        resources:
+          requests:
+            cpu: 100m
+            memory: 90Mi
+          limits:
+            cpu: 200m    # Add limits as required by policy
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+              - NET_BIND_SERVICE
+            drop:
+              - ALL
+          runAsNonRoot: true
+          runAsUser: 101
+          readOnlyRootFilesystem: true  # Set this to true to comply with policy
+        volumeMounts:
+        - name: webhook-cert
+          mountPath: /usr/local/certificates/
+          readOnly: true
+      volumes:
+      - name: webhook-cert
+        secret:
+          secretName: ingress-nginx-admission
