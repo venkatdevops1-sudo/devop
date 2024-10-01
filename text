@@ -3,6 +3,8 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: ct-api-ingress
   namespace: command-center
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
 spec:
   ingressClassName: nginx
   rules:
