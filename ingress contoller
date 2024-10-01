@@ -25,7 +25,7 @@ spec:
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.11.2
     spec:
-      automountServiceAccountToken: true  # Set to true to allow token automounting
+      automountServiceAccountToken: false  # Set to false based on ct-api deployment
       containers:
       - name: controller
         image: "registry.k8s.io/ingress-nginx/controller:v1.11.2"
@@ -53,15 +53,15 @@ spec:
             memory: 90Mi
           limits:
             cpu: 200m
-            memory: 128Mi  # Ensure limits are specified
+            memory: 128Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             add:
-              - NET_BIND_SERVICE
+            - NET_BIND_SERVICE
             drop:
-              - ALL
-          readOnlyRootFilesystem: true  # Ensure root filesystem is read-only
+            - ALL
+          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 101
         volumeMounts:
@@ -77,4 +77,5 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       serviceAccountName: ingress-nginx
-      securityContext: {}
+      imagePullSecrets:
+      - name: <your-image-pull-secret> # Use if necessary
