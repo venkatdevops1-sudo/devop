@@ -25,7 +25,7 @@ spec:
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.11.2
     spec:
-      automountServiceAccountToken: false
+      automountServiceAccountToken: false  # Prevents automounting
       containers:
       - name: controller
         image: "registry.k8s.io/ingress-nginx/controller:v1.11.2"
@@ -76,6 +76,26 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-      serviceAccountName: ingress-nginx
+      serviceAccountName: ingress-nginx  
       imagePullSecrets:
-      - name: acr-secret
+        - name: acr-secret  
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: kubernetes.azure.com/agentpool
+                    operator: In
+                    values:
+                      - agentpool  # Ensure this matches your actual node pool
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
