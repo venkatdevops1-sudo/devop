@@ -1,18 +1,311 @@
-kind: Ingress
-apiVersion: networking.k8s.io/v1
+kind: Deployment
+apiVersion: apps/v1
 metadata:
-  name: ct-api-ingress
+  name: ct-api
   namespace: command-center
+  uid: 71405d5a-8913-44cb-8546-78cad729f633
+  resourceVersion: '6140807'
+  generation: 4
+  creationTimestamp: '2024-10-01T07:10:19Z'
+  labels:
+    app: command-center
+    component: ct-api
+    tier: api
+  annotations:
+    deployment.kubernetes.io/revision: '4'
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: apps/v1
+      time: '2024-10-02T06:16:12Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:component: {}
+            f:tier: {}
+        f:spec:
+          f:progressDeadlineSeconds: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:strategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app: {}
+                f:component: {}
+                f:tier: {}
+            f:spec:
+              f:affinity:
+                .: {}
+                f:nodeAffinity:
+                  .: {}
+                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
+              f:automountServiceAccountToken: {}
+              f:containers:
+                k:{"name":"ct-api"}:
+                  .: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"ASPNETCORE_URLS"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__Audiences__0"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__Authority"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__ClientId"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__ClientSecret"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef: {}
+                    k:{"name":"Auth__Issuers__0"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__Protocol"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__Provider"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"Auth__TenantId"}:
+                      .: {}
+                      f:name: {}
+                      f:value: {}
+                    k:{"name":"CT_CONNECTIONTYPE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef: {}
+                    k:{"name":"CT_SQL_SERVER_URL"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:secretKeyRef: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":8080,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:securityContext:
+                    .: {}
+                    f:readOnlyRootFilesystem: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+              f:dnsPolicy: {}
+              f:imagePullSecrets:
+                .: {}
+                k:{"name":"acr-secret"}: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: apps/v1
+      time: '2024-10-02T06:16:12Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:deployment.kubernetes.io/revision: {}
+        f:status:
+          f:availableReplicas: {}
+          f:conditions:
+            .: {}
+            k:{"type":"Available"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Progressing"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"ReplicaFailure"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:unavailableReplicas: {}
+      subresource: status
 spec:
-  ingressClassName: nginx
-  rules:
-    - host: command-center.southindia.cloudapp.azure.com
-      http:
-        paths:
-          - path: /ct-api(/|$)(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: ct-api-service
-                port:
-                  number: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command-center
+      component: ct-api
+      tier: api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: command-center
+        component: ct-api
+        tier: api
+    spec:
+      containers:
+        - name: ct-api
+          image: devscmct.azurecr.io/ct-api-image:v1
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: CT_SQL_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: CT_SQL_SERVER_URL
+            - name: CT_CONNECTIONTYPE
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: CT_CONNECTIONTYPE
+            - name: Auth__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: Auth__ClientSecret
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+            - name: Auth__Provider
+              value: EntraID
+            - name: Auth__Protocol
+              value: JWT
+            - name: Auth__Authority
+              value: >-
+                https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/
+            - name: Auth__ClientId
+              value: c052b66c-0334-4a02-bdc7-a8b601aeb2cb
+            - name: Auth__Audiences__0
+              value: api://c052b66c-0334-4a02-bdc7-a8b601aeb2cb
+            - name: Auth__Issuers__0
+              value: https://sts.windows.net/16f5f358-437f-4d93-875b-01c41113fcf4/
+            - name: Auth__TenantId
+              value: 16f5f358-437f-4d93-875b-01c41113fcf4
+          resources:
+            limits:
+              cpu: 600m
+              memory: 3Gi
+            requests:
+              cpu: 200m
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+          securityContext:
+            readOnlyRootFilesystem: true
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: ingress-nginx
+      serviceAccount: ingress-nginx
+      automountServiceAccountToken: true
+      securityContext: {}
+      imagePullSecrets:
+        - name: acr-secret
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: kubernetes.azure.com/agentpool
+                    operator: In
+                    values:
+                      - agentpool
+      schedulerName: default-scheduler
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+status:
+  observedGeneration: 4
+  replicas: 1
+  readyReplicas: 1
+  availableReplicas: 1
+  unavailableReplicas: 1
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2024-10-01T07:10:23Z'
+      lastTransitionTime: '2024-10-01T07:10:23Z'
+      reason: MinimumReplicasAvailable
+      message: Deployment has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2024-10-02T06:16:12Z'
+      lastTransitionTime: '2024-10-01T08:31:59Z'
+      reason: NewReplicaSetCreated
+      message: Created new replica set "ct-api-7565dc489d"
+    - type: ReplicaFailure
+      status: 'True'
+      lastUpdateTime: '2024-10-02T06:16:12Z'
+      lastTransitionTime: '2024-10-02T06:16:12Z'
+      reason: FailedCreate
+      message: >-
+        admission webhook "validation.gatekeeper.sh" denied the request:
+        [azurepolicy-k8sazurev2blockautomounttoken-cb3d0dc1264514802946]
+        Automounting service account token is disallowed, pod:
+        ct-api-7565dc489d-8mjhr
