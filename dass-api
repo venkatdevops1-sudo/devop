@@ -18,6 +18,7 @@ spec:
         component: daas-api
         tier: API
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: daas-api
           image: devscmct.azurecr.io/daas-api-image:v1
@@ -72,7 +73,8 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         pool: ccuipool
-      securityContext: {}
+      securityContext:
+          readOnlyRootFilesystem: true
       imagePullSecrets:
         - name: acr-secret
       schedulerName: default-scheduler
