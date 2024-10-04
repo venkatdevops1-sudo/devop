@@ -18,6 +18,9 @@ spec:
         component: daas-api
         tier: API
     spec:
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
       automountServiceAccountToken: false
       containers:
         - name: daas-api
