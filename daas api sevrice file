@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: daas-api-service
+  namespace: command-center
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: command-center
+    component: daas-api
+    tier: API
+  type: ClusterIP
+  sessionAffinity: None
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  internalTrafficPolicy: Cluster
+status:
+  loadBalancer: {}
