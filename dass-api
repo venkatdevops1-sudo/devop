@@ -1,0 +1,86 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: daas-api
+  namespace: command-center
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: command-center
+      component: daas-api
+      tier: API
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: command-center
+        component: daas-api
+        tier: API
+    spec:
+      containers:
+        - name: daas-api
+          image: devscmct.azurecr.io/daas-api-image:v1
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: DAAS_SQL_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: DAAS_SQL_SERVER_URL
+            - name: CONNECTIONTYPE
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: CONNECTIONTYPE
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+            - name: Auth__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: cc-secrets
+                  key: Auth__ClientSecret
+            - name: Auth__Provider
+              value: EntraID
+            - name: Auth__Protocol
+              value: JWT
+            - name: Auth__Authority
+              value: >-
+                https://login.microsoftonline.com/c7ac8f34-d29e-4f96-b9c9-c50d7c861f3b/
+            - name: Auth__ClientId
+              value: 7fdd828e-291d-4606-b389-9c3a63163fed
+            - name: Auth__Audiences__0
+              value: api://7fdd828e-291d-4606-b389-9c3a63163fed
+            - name: Auth__Issuers__0
+              value: https://sts.windows.net/c7ac8f34-d29e-4f96-b9c9-c50d7c861f3b/
+            - name: Auth__TenantId
+              value: c7ac8f34-d29e-4f96-b9c9-c50d7c861f3b
+          resources:
+            limits:
+              cpu: 400m
+              memory: 400Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        pool: ccuipool
+      securityContext: {}
+      imagePullSecrets:
+        - name: acr-secret
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
