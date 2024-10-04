@@ -76,7 +76,7 @@ spec:
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
       nodeSelector:
-        pool: ccuipool
+        pool: agentpool
       imagePullSecrets:
         - name: acr-secret
       schedulerName: default-scheduler
