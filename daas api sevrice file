@@ -18,5 +18,3 @@ spec:
     - IPv4
   ipFamilyPolicy: SingleStack
   internalTrafficPolicy: Cluster
-status:
-  loadBalancer: {}
