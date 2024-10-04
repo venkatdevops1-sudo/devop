@@ -21,7 +21,6 @@ spec:
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
-      automountServiceAccountToken: false
       containers:
         - name: daas-api
           image: devscmct.azurecr.io/daas-api-image:v1
