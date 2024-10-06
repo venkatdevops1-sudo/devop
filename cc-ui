@@ -20,10 +20,10 @@ spec:
       annotations:
         kubectl.kubernetes.io/restartedAt: '2024-08-02T06:32:06Z'
     spec:
-	  tolerations:
-       - key: "CriticalAddonsOnly"
-         operator: "Exists"
-         effect: "NoSchedule"
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: cc-ui
           image: devscmct.azurecr.io/cc-ui-image:v1
@@ -56,4 +56,3 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
-
