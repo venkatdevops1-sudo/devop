@@ -7,10 +7,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - command-center.eastus.cloudapp.azure.com
+        - command-center.bigindiahub.coke.com
       secretName: tls-secret
   rules:
-    - host: command-center.eastus.cloudapp.azure.com
+    - host: command-center.bigindiahub.coke.com
       http:
         paths:
           - path: /ct-api(/|$)(.*)
