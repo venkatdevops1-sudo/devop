@@ -4,8 +4,8 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
   uid: 6bde5638-127f-4c39-af16-ab9b49e45bbf
-  resourceVersion: '7979134'
-  generation: 2
+  resourceVersion: '7981525'
+  generation: 3
   creationTimestamp: '2024-10-06T08:50:39Z'
   labels:
     app.kubernetes.io/component: controller
@@ -15,7 +15,7 @@ metadata:
     app.kubernetes.io/version: 0.44.0
     helm.sh/chart: ingress-nginx-3.23.0
   annotations:
-    deployment.kubernetes.io/revision: '2'
+    deployment.kubernetes.io/revision: '3'
     kubectl.kubernetes.io/last-applied-configuration: >
       {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"controller","app.kubernetes.io/instance":"ingress-nginx","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"ingress-nginx","app.kubernetes.io/version":"0.44.0","helm.sh/chart":"ingress-nginx-3.23.0"},"name":"ingress-nginx-controller","namespace":"ingress-nginx"},"spec":{"minReadySeconds":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app.kubernetes.io/component":"controller","app.kubernetes.io/instance":"ingress-nginx","app.kubernetes.io/name":"ingress-nginx"}},"template":{"metadata":{"labels":{"app.kubernetes.io/component":"controller","app.kubernetes.io/instance":"ingress-nginx","app.kubernetes.io/name":"ingress-nginx"}},"spec":{"containers":[{"args":["/nginx-ingress-controller","--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller","--election-id=ingress-controller-leader","--ingress-class=nginx","--configmap=$(POD_NAMESPACE)/ingress-nginx-controller","--validating-webhook=:8443","--validating-webhook-certificate=/usr/local/certificates/cert","--validating-webhook-key=/usr/local/certificates/key"],"env":[{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"LD_PRELOAD","value":"/usr/local/lib/libmimalloc.so"}],"image":"k8s.gcr.io/ingress-nginx/controller:v0.44.0@sha256:3dd0fac48073beaca2d67a78c746c7593f9c575168a17139a9955a82c63c4b9a","imagePullPolicy":"IfNotPresent","lifecycle":{"preStop":{"exec":{"command":["/wait-shutdown"]}}},"livenessProbe":{"failureThreshold":5,"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"name":"controller","ports":[{"containerPort":80,"name":"http","protocol":"TCP"},{"containerPort":443,"name":"https","protocol":"TCP"},{"containerPort":8443,"name":"webhook","protocol":"TCP"}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/healthz","port":10254,"scheme":"HTTP"},"initialDelaySeconds":10,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":1},"resources":{"requests":{"cpu":"100m","memory":"90Mi"}},"securityContext":{"allowPrivilegeEscalation":true,"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["ALL"]},"runAsUser":101},"volumeMounts":[{"mountPath":"/usr/local/certificates/","name":"webhook-cert","readOnly":true}]}],"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"ingress-nginx","terminationGracePeriodSeconds":300,"volumes":[{"name":"webhook-cert","secret":{"secretName":"ingress-nginx-admission"}}]}}}}
   managedFields:
@@ -78,7 +78,6 @@ metadata:
                       f:valueFrom:
                         .: {}
                         f:fieldRef: {}
-                  f:image: {}
                   f:imagePullPolicy: {}
                   f:lifecycle:
                     .: {}
@@ -172,17 +171,20 @@ metadata:
     - manager: Mozilla
       operation: Update
       apiVersion: apps/v1
-      time: '2024-10-06T08:52:36Z'
+      time: '2024-10-06T09:03:19Z'
       fieldsType: FieldsV1
       fieldsV1:
         f:spec:
           f:template:
             f:spec:
+              f:containers:
+                k:{"name":"controller"}:
+                  f:image: {}
               f:tolerations: {}
     - manager: kube-controller-manager
       operation: Update
       apiVersion: apps/v1
-      time: '2024-10-06T08:57:14Z'
+      time: '2024-10-06T09:04:52Z'
       fieldsType: FieldsV1
       fieldsV1:
         f:metadata:
@@ -235,7 +237,7 @@ spec:
       containers:
         - name: controller
           image: >-
-            k8s.gcr.io/ingress-nginx/controller:v0.44.0@sha256:3dd0fac48073beaca2d67a78c746c7593f9c575168a17139a9955a82c63c4b9a
+            k8s.gcr.io/ingress-nginx/controller:v1.0.0@sha256:3dd0fac48073beaca2d67a78c746c7593f9c575168a17139a9955a82c63c4b9a
           args:
             - /nginx-ingress-controller
             - '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller'
@@ -333,10 +335,10 @@ spec:
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
 status:
-  observedGeneration: 2
-  replicas: 1
+  observedGeneration: 3
+  replicas: 2
   updatedReplicas: 1
-  unavailableReplicas: 1
+  unavailableReplicas: 2
   conditions:
     - type: Available
       status: 'False'
@@ -346,7 +348,7 @@ status:
       message: Deployment does not have minimum availability.
     - type: Progressing
       status: 'True'
-      lastUpdateTime: '2024-10-06T08:57:14Z'
+      lastUpdateTime: '2024-10-06T09:04:52Z'
       lastTransitionTime: '2024-10-06T08:50:39Z'
       reason: ReplicaSetUpdated
-      message: ReplicaSet "ingress-nginx-controller-c777c4ffd" is progressing.
+      message: ReplicaSet "ingress-nginx-controller-7f84f5ccfc" is progressing.
