@@ -1,8 +1,15 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: ingress-nginx-controller
-  namespace: command-center
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/version: 0.44.0
+    helm.sh/chart: ingress-nginx-3.23.0
 spec:
   replicas: 1
   selector:
@@ -15,26 +22,26 @@ spec:
       labels:
         app.kubernetes.io/component: controller
         app.kubernetes.io/instance: ingress-nginx
-        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: ingress-nginx
-        app.kubernetes.io/part-of: ingress-nginx
-        app.kubernetes.io/version: 1.10.1
-        helm.sh/chart: ingress-nginx-4.10.1
     spec:
-      serviceAccountName: ingress-nginx  # This is the service account you created
-      automountServiceAccountToken: false  # Disable automatic token mounting
+      volumes:
+        - name: webhook-cert
+          secret:
+            secretName: ingress-nginx-admission
+            defaultMode: 420
       containers:
         - name: controller
-          image: registry.k8s.io/ingress-nginx/controller:v1.10.1
+          image: k8s.gcr.io/ingress-nginx/controller:v1.0.0
           args:
             - /nginx-ingress-controller
             - '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller'
-            - '--election-id=ingress-nginx-leader'
-            - '--controller-class=k8s.io/ingress-nginx'
+            - '--election-id=ingress-controller-leader'
             - '--ingress-class=nginx'
             - '--configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
-            - '--validating-webhook=false'  # Disable webhook as discussed earlier
-            - '--enable-metrics=false'
+            - '--validating-webhook=:8443'
+            - '--validating-webhook-certificate=/usr/local/certificates/cert'
+            - '--validating-webhook-key=/usr/local/certificates/key'
+            - '--watch-ingress-without-class=true'  # Ensures that ingresses without a class are processed
           ports:
             - name: http
               containerPort: 80
@@ -42,16 +49,53 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
+            - name: webhook
+              containerPort: 8443
+              protocol: TCP
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           volumeMounts:
-            - name: nginx-sa-token
-              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            - name: webhook-cert
+              mountPath: /usr/local/certificates/
               readOnly: true
-      volumes:
-        - name: nginx-sa-token
-          secret:
-            secretName: ingress-nginx-token  # Mount the manually created token secret
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 300
-      dnsPolicy: ClusterFirst
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /wait-shutdown
+      serviceAccountName: ingress-nginx
       nodeSelector:
         kubernetes.io/os: linux
+      terminationGracePeriodSeconds: 300
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
