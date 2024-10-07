@@ -1,0 +1,23 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: daas-ui-ingress
+  namespace: command-center
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - command-center.bigindiahub.coke.com
+      secretName: tls-secret
+  rules:
+    - host: command-center.bigindiahub.coke.com
+      http:
+        paths:
+          - path: /daas(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: daas-ui-service
+                port:
+                  number: 80
+
