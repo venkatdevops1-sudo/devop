@@ -18,10 +18,10 @@ spec:
         component: ct-api
         tier: api
     spec:
-	  tolerations:
-       - key: "CriticalAddonsOnly"
-         operator: "Exists"
-         effect: "NoSchedule"
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: ct-api
           image: devscmct.azurecr.io/ct-api-image:v2
