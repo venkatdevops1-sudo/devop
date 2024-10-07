@@ -3,177 +3,6 @@ apiVersion: apps/v1
 metadata:
   name: ct-api
   namespace: command-center
-  uid: c83d967b-3c8c-4507-ae13-f38ea4cd5e9c
-  resourceVersion: '5504622'
-  generation: 2
-  creationTimestamp: '2024-09-30T19:42:44Z'
-  labels:
-    app: command-center
-    component: ct-api
-    tier: api
-  annotations:
-    deployment.kubernetes.io/revision: '2'
-  managedFields:
-    - manager: Mozilla
-      operation: Update
-      apiVersion: apps/v1
-      time: '2024-09-30T20:11:49Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations: {}
-          f:labels:
-            .: {}
-            f:app: {}
-            f:component: {}
-            f:tier: {}
-        f:spec:
-          f:progressDeadlineSeconds: {}
-          f:replicas: {}
-          f:revisionHistoryLimit: {}
-          f:selector: {}
-          f:strategy:
-            f:rollingUpdate:
-              .: {}
-              f:maxSurge: {}
-              f:maxUnavailable: {}
-            f:type: {}
-          f:template:
-            f:metadata:
-              f:labels:
-                .: {}
-                f:app: {}
-                f:component: {}
-                f:tier: {}
-            f:spec:
-              f:affinity:
-                .: {}
-                f:nodeAffinity:
-                  .: {}
-                  f:preferredDuringSchedulingIgnoredDuringExecution: {}
-              f:automountServiceAccountToken: {}
-              f:containers:
-                k:{"name":"ct-api"}:
-                  .: {}
-                  f:env:
-                    .: {}
-                    k:{"name":"ASPNETCORE_URLS"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__Audiences__0"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__Authority"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__ClientId"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__ClientSecret"}:
-                      .: {}
-                      f:name: {}
-                      f:valueFrom:
-                        .: {}
-                        f:secretKeyRef: {}
-                    k:{"name":"Auth__Issuers__0"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__Protocol"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__Provider"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"Auth__TenantId"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"CT_CONNECTIONTYPE"}:
-                      .: {}
-                      f:name: {}
-                      f:valueFrom:
-                        .: {}
-                        f:secretKeyRef: {}
-                    k:{"name":"CT_SQL_SERVER_URL"}:
-                      .: {}
-                      f:name: {}
-                      f:valueFrom:
-                        .: {}
-                        f:secretKeyRef: {}
-                  f:image: {}
-                  f:imagePullPolicy: {}
-                  f:name: {}
-                  f:ports:
-                    .: {}
-                    k:{"containerPort":8080,"protocol":"TCP"}:
-                      .: {}
-                      f:containerPort: {}
-                      f:protocol: {}
-                  f:resources:
-                    .: {}
-                    f:limits:
-                      .: {}
-                      f:cpu: {}
-                      f:memory: {}
-                    f:requests:
-                      .: {}
-                      f:cpu: {}
-                      f:memory: {}
-                  f:securityContext:
-                    .: {}
-                    f:readOnlyRootFilesystem: {}
-                  f:terminationMessagePath: {}
-                  f:terminationMessagePolicy: {}
-              f:dnsPolicy: {}
-              f:imagePullSecrets:
-                .: {}
-                k:{"name":"dfdpcred"}: {}
-              f:restartPolicy: {}
-              f:schedulerName: {}
-              f:securityContext: {}
-              f:terminationGracePeriodSeconds: {}
-              f:tolerations: {}
-    - manager: kube-controller-manager
-      operation: Update
-      apiVersion: apps/v1
-      time: '2024-09-30T20:11:56Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            f:deployment.kubernetes.io/revision: {}
-        f:status:
-          f:availableReplicas: {}
-          f:conditions:
-            .: {}
-            k:{"type":"Available"}:
-              .: {}
-              f:lastTransitionTime: {}
-              f:lastUpdateTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-            k:{"type":"Progressing"}:
-              .: {}
-              f:lastTransitionTime: {}
-              f:lastUpdateTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-          f:observedGeneration: {}
-          f:readyReplicas: {}
-          f:replicas: {}
-          f:updatedReplicas: {}
-      subresource: status
 spec:
   replicas: 1
   selector:
@@ -189,9 +18,13 @@ spec:
         component: ct-api
         tier: api
     spec:
+	  tolerations:
+       - key: "CriticalAddonsOnly"
+         operator: "Exists"
+         effect: "NoSchedule"
       containers:
         - name: ct-api
-          image: dfdpacr.azurecr.io/ct-api:ck2
+          image: devscmct.azurecr.io/ct-api-image:v2
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -219,48 +52,34 @@ spec:
               value: JWT
             - name: Auth__Authority
               value: >-
-                https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/
+                https://login.microsoftonline.com/c7ac8f34-d29e-4f96-b9c9-c50d7c861f3b/
             - name: Auth__ClientId
-              value: c052b66c-0334-4a02-bdc7-a8b601aeb2cb
+              value: 7fdd828e-291d-4606-b389-9c3a63163fed
             - name: Auth__Audiences__0
-              value: api://c052b66c-0334-4a02-bdc7-a8b601aeb2cb
+              value: api://7fdd828e-291d-4606-b389-9c3a63163fed
             - name: Auth__Issuers__0
-              value: https://sts.windows.net/16f5f358-437f-4d93-875b-01c41113fcf4/
+              value: https://sts.windows.net/c7ac8f34-d29e-4f96-b9c9-c50d7c861f3b/
             - name: Auth__TenantId
-              value: 16f5f358-437f-4d93-875b-01c41113fcf4
+              value: c7ac8f34-d29e-4f96-b9c9-c50d7c861f3b
           resources:
             limits:
-              cpu: 600m
-              memory: 3Gi
+              cpu: 400m
+              memory: 400Mi
             requests:
               cpu: 200m
-              memory: 1Gi
+              memory: 200Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always
-          securityContext:
-            readOnlyRootFilesystem: true
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      automountServiceAccountToken: false
+      nodeSelector:
+        agentpool: agentpool
       securityContext: {}
       imagePullSecrets:
-        - name: dfdpcred
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              preference:
-                matchExpressions:
-                  - key: kubernetes.azure.com/agentpool
-                    operator: In
-                    values:
-                      - agentpool
+        - name: acr-secret
       schedulerName: default-scheduler
-      tolerations:
-        - key: CriticalAddonsOnly
-          operator: Exists
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -268,22 +87,3 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
-status:
-  observedGeneration: 2
-  replicas: 1
-  updatedReplicas: 1
-  readyReplicas: 1
-  availableReplicas: 1
-  conditions:
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2024-09-30T20:11:56Z'
-      lastTransitionTime: '2024-09-30T20:11:56Z'
-      reason: MinimumReplicasAvailable
-      message: Deployment has minimum availability.
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2024-09-30T20:11:56Z'
-      lastTransitionTime: '2024-09-30T19:42:44Z'
-      reason: NewReplicaSetAvailable
-      message: ReplicaSet "ct-api-65d7f9d898" has successfully progressed.
