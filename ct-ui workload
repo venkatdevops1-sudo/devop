@@ -18,10 +18,10 @@ spec:
         component: ct-ui
         tier: UI
     spec:
-	  tolerations:
-       - key: "CriticalAddonsOnly"
-         operator: "Exists"
-         effect: "NoSchedule"
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: ct-ui
           image: devscmct.azurecr.io/ct-ui-image:v1
