@@ -26,7 +26,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: cc-ui
-          image: devscmct.azurecr.io/cc-ui-image:v1
+          image: devscmct.azurecr.io/cc-ui-image:v2
           ports:
             - containerPort: 80
               protocol: TCP
@@ -44,7 +44,7 @@ spec:
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
       nodeSelector:
-        pool: agentpool
+        agentpool: agentpool
       securityContext: {}
       imagePullSecrets:
         - name: acr-secret
