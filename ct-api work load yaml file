@@ -21,7 +21,7 @@ spec:
         component: ct-api
         tier: api
     spec:
-	  tolerations:
+      tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
           effect: "NoSchedule"
