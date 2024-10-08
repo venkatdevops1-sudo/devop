@@ -27,7 +27,7 @@ spec:
           effect: "NoSchedule"
       containers:
       - name: ct-api
-        image: dfdpacr.azurecr.io/ct-api:PLACEHOLDER_TAG
+        image: devscmct.azurecr.io/ct-api-image:v2
         ports:
         - containerPort: 8080
         env:
