@@ -1,3 +1,4 @@
 azurepolicy-k8sazurev1serviceallowedports-8fe85a3d33eaadda5776
 rg-dev-SupplyChaincontroltower
 aks-dev-scm-ct-infra
+nginx.ingress.kubernetes.io/enable-access-log: "true"
