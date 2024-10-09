@@ -23,11 +23,11 @@ spec:
           operator: "Exists"
           effect: "NoSchedule"
       nodeSelector:
-        agentpool: agentpool  # Replace with your node pool label if different
-      serviceAccountName: internal-ingress-nginx
+        agentpool: agentpool  # Ensure this matches your node pool
+      serviceAccountName: internal-ingress-nginx  # Refers to the ServiceAccount created above
       containers:
         - name: controller
-          image: registry.k8s.io/ingress-nginx/controller:v1.4.4  # Adjust image version as necessary
+          image: k8s.gcr.io/ingress-nginx/controller:v1.3.0  # Use a stable version; update if needed
           ports:
             - containerPort: 80
             - containerPort: 443
@@ -38,6 +38,15 @@ spec:
             limits:
               memory: "400Mi"
               cpu: "400m"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           volumeMounts:
             - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
               name: kube-api-access
@@ -53,30 +62,3 @@ spec:
                   items:
                     - key: ca.crt
                       path: ca.crt
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: internal-ingress-nginx
-  namespace: ingress-nginx
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: internal-ingress-nginx-controller
-  namespace: ingress-nginx
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # Internal LoadBalancer
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 80
-      protocol: TCP
-      name: http
-    - port: 443
-      targetPort: 443
-      protocol: TCP
-      name: https
-  selector:
-    app.kubernetes.io/name: ingress-nginx
