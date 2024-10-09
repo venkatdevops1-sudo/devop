@@ -1,8 +1,12 @@
-apiVersion: v1
 kind: Pod
+apiVersion: v1
 metadata:
-  name: internal-ingress-ingress-nginx-admission-create-76v4r
+  name: internal-ingress-ingress-nginx-admission-create-grs2j
+  generateName: internal-ingress-ingress-nginx-admission-create-
   namespace: ingress-nginx
+  uid: ddf9edfa-9229-4c6f-810d-2d350f3b0a6a
+  resourceVersion: '9378103'
+  creationTimestamp: '2024-10-09T11:11:19Z'
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: internal-ingress
@@ -12,62 +16,108 @@ metadata:
     app.kubernetes.io/version: 1.11.3
     batch.kubernetes.io/controller-uid: 806ff09a-4345-471b-810c-a86404cb4523
     batch.kubernetes.io/job-name: internal-ingress-ingress-nginx-admission-create
+    controller-uid: 806ff09a-4345-471b-810c-a86404cb4523
     helm.sh/chart: ingress-nginx-4.11.3
+    job-name: internal-ingress-ingress-nginx-admission-create
   ownerReferences:
-  - apiVersion: batch/v1
-    blockOwnerDeletion: true
-    controller: true
-    kind: Job
-    name: internal-ingress-ingress-nginx-admission-create
-    uid: 806ff09a-4345-471b-810c-a86404cb4523
+    - apiVersion: batch/v1
+      kind: Job
+      name: internal-ingress-ingress-nginx-admission-create
+      uid: 806ff09a-4345-471b-810c-a86404cb4523
+      controller: true
+      blockOwnerDeletion: true
+  finalizers:
+    - batch.kubernetes.io/job-tracking
+  managedFields:
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: v1
+      time: '2024-10-09T11:11:19Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"batch.kubernetes.io/job-tracking": {}
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+            f:app.kubernetes.io/managed-by: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/part-of: {}
+            f:app.kubernetes.io/version: {}
+            f:batch.kubernetes.io/controller-uid: {}
+            f:batch.kubernetes.io/job-name: {}
+            f:controller-uid: {}
+            f:helm.sh/chart: {}
+            f:job-name: {}
+          f:ownerReferences:
+            .: {}
+            k:{"uid":"806ff09a-4345-471b-810c-a86404cb4523"}: {}
+        f:spec:
+          f:containers:
+            k:{"name":"create"}:
+              .: {}
+              f:args: {}
+              f:env:
+                .: {}
+                k:{"name":"POD_NAMESPACE"}:
+                  .: {}
+                  f:name: {}
+                  f:valueFrom:
+                    .: {}
+                    f:fieldRef: {}
+              f:image: {}
+              f:imagePullPolicy: {}
+              f:name: {}
+              f:resources: {}
+              f:securityContext:
+                .: {}
+                f:allowPrivilegeEscalation: {}
+                f:capabilities:
+                  .: {}
+                  f:drop: {}
+                f:readOnlyRootFilesystem: {}
+                f:runAsNonRoot: {}
+                f:runAsUser: {}
+                f:seccompProfile:
+                  .: {}
+                  f:type: {}
+              f:terminationMessagePath: {}
+              f:terminationMessagePolicy: {}
+          f:dnsPolicy: {}
+          f:enableServiceLinks: {}
+          f:nodeSelector: {}
+          f:restartPolicy: {}
+          f:schedulerName: {}
+          f:securityContext: {}
+          f:serviceAccount: {}
+          f:serviceAccountName: {}
+          f:terminationGracePeriodSeconds: {}
+    - manager: kube-scheduler
+      operation: Update
+      apiVersion: v1
+      time: '2024-10-09T11:11:19Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:conditions:
+            .: {}
+            k:{"type":"PodScheduled"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+      subresource: status
 spec:
-  tolerations:
-    - key: "CriticalAddonsOnly"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: node.kubernetes.io/not-ready
-      operator: Exists
-      effect: NoExecute
-      tolerationSeconds: 300
-    - key: node.kubernetes.io/unreachable
-      operator: Exists
-      effect: NoExecute
-      tolerationSeconds: 300
-  nodeSelector:
-    agentpool: agentpool  # Ensure this matches your node pool name
-  containers:
-    - name: create
-      image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.4@sha256:a9f03b34a3cbfbb26d103a14046ab2c5130a80c3d69d526ff8063d2b37b9fd3f
-      imagePullPolicy: IfNotPresent
-      args:
-        - create
-        - --host=internal-ingress-ingress-nginx-controller-admission,internal-ingress-ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
-        - --namespace=$(POD_NAMESPACE)
-        - --secret-name=internal-ingress-ingress-nginx-admission
-      env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsNonRoot: true
-        runAsUser: 65532
-        seccompProfile:
-          type: RuntimeDefault
-      volumeMounts:
-        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-          name: kube-api-access-7g5tn
-          readOnly: true
   volumes:
-    - name: kube-api-access-7g5tn
+    - name: kube-api-access-c9cgv
       projected:
-        defaultMode: 420
         sources:
           - serviceAccountToken:
               expirationSeconds: 3607
@@ -83,11 +133,72 @@ spec:
                   fieldRef:
                     apiVersion: v1
                     fieldPath: metadata.namespace
+        defaultMode: 420
+  containers:
+    - name: create
+      image: >-
+        registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.4@sha256:a9f03b34a3cbfbb26d103a14046ab2c5130a80c3d69d526ff8063d2b37b9fd3f
+      args:
+        - create
+        - >-
+          --host=internal-ingress-ingress-nginx-controller-admission,internal-ingress-ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
+        - '--namespace=$(POD_NAMESPACE)'
+        - '--secret-name=internal-ingress-ingress-nginx-admission'
+      env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+      resources: {}
+      volumeMounts:
+        - name: kube-api-access-c9cgv
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        runAsUser: 65532
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+  restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 30
   dnsPolicy: ClusterFirst
+  nodeSelector:
+    kubernetes.io/os: linux
+  serviceAccountName: internal-ingress-ingress-nginx-admission
+  serviceAccount: internal-ingress-ingress-nginx-admission
+  securityContext: {}
+  schedulerName: default-scheduler
+  tolerations:
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+  priority: 0
   enableServiceLinks: true
   preemptionPolicy: PreemptLowerPriority
-  priority: 0
-  restartPolicy: OnFailure
-  schedulerName: default-scheduler
-  serviceAccountName: internal-ingress-ingress-nginx-admission
-  terminationGracePeriodSeconds: 30
+status:
+  phase: Pending
+  conditions:
+    - type: PodScheduled
+      status: 'False'
+      lastProbeTime: null
+      lastTransitionTime: '2024-10-09T11:11:19Z'
+      reason: Unschedulable
+      message: >-
+        0/7 nodes are available: 7 node(s) had untolerated taint
+        {CriticalAddonsOnly: true}. preemption: 0/7 nodes are available: 7
+        Preemption is not helpful for scheduling..
+  qosClass: BestEffort
