@@ -26,4 +26,75 @@ metadata:
   finalizers:
     - batch.kubernetes.io/job-tracking
 spec:
-  # Add the rest of your spec here...
+  containers:
+    - name: create
+      image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.4
+      args:
+        - create
+        - >-
+          --host=internal-ingress-ingress-nginx-controller-admission,internal-ingress-ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
+        - '--namespace=$(POD_NAMESPACE)'
+        - '--secret-name=internal-ingress-ingress-nginx-admission'
+      env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+      volumeMounts:
+        - name: kube-api-access-c9cgv
+          readOnly: true
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        runAsUser: 65532
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+  volumes:
+    - name: kube-api-access-c9cgv
+      projected:
+        sources:
+          - serviceAccountToken:
+              expirationSeconds: 3607
+              path: token
+          - configMap:
+              name: kube-root-ca.crt
+              items:
+                - key: ca.crt
+                  path: ca.crt
+          - downwardAPI:
+              items:
+                - path: namespace
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.namespace
+        defaultMode: 420
+  restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 30
+  dnsPolicy: ClusterFirst
+  nodeSelector:
+    kubernetes.io/os: linux
+  serviceAccountName: internal-ingress-ingress-nginx-admission
+  serviceAccount: internal-ingress-ingress-nginx-admission
+  securityContext: {}
+  schedulerName: default-scheduler
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
