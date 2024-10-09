@@ -4,9 +4,6 @@ metadata:
   name: internal-ingress-ingress-nginx-admission-create-grs2j
   generateName: internal-ingress-ingress-nginx-admission-create-
   namespace: ingress-nginx
-  uid: ddf9edfa-9229-4c6f-810d-2d350f3b0a6a
-  resourceVersion: '9378103'
-  creationTimestamp: '2024-10-09T11:11:19Z'
   labels:
     app.kubernetes.io/component: admission-webhook
     app.kubernetes.io/instance: internal-ingress
@@ -29,93 +26,4 @@ metadata:
   finalizers:
     - batch.kubernetes.io/job-tracking
 spec:
-  volumes:
-    - name: kube-api-access-c9cgv
-      projected:
-        sources:
-          - serviceAccountToken:
-              expirationSeconds: 3607
-              path: token
-          - configMap:
-              name: kube-root-ca.crt
-              items:
-                - key: ca.crt
-                  path: ca.crt
-          - downwardAPI:
-              items:
-                - path: namespace
-                  fieldRef:
-                    apiVersion: v1
-                    fieldPath: metadata.namespace
-        defaultMode: 420
-  containers:
-    - name: create
-      image: >-
-        registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.4@sha256:a9f03b34a3cbfbb26d103a14046ab2c5130a80c3d69d526ff8063d2b37b9fd3f
-      args:
-        - create
-        - >-
-          --host=internal-ingress-ingress-nginx-controller-admission,internal-ingress-ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
-        - '--namespace=$(POD_NAMESPACE)'
-        - '--secret-name=internal-ingress-ingress-nginx-admission'
-      env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-      resources: {}
-      volumeMounts:
-        - name: kube-api-access-c9cgv
-          readOnly: true
-          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-      terminationMessagePath: /dev/termination-log
-      terminationMessagePolicy: File
-      imagePullPolicy: IfNotPresent
-      securityContext:
-        capabilities:
-          drop:
-            - ALL
-        runAsUser: 65532
-        runAsNonRoot: true
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        seccompProfile:
-          type: RuntimeDefault
-  restartPolicy: OnFailure
-  terminationGracePeriodSeconds: 30
-  dnsPolicy: ClusterFirst
-  nodeSelector:
-    agentpool: agentpool  # Specify the correct node selector here
-  serviceAccountName: internal-ingress-ingress-nginx-admission
-  serviceAccount: internal-ingress-ingress-nginx-admission
-  securityContext: {}
-  schedulerName: default-scheduler
-  tolerations:
-    - key: "CriticalAddonsOnly"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node.kubernetes.io/not-ready"
-      operator: "Exists"
-      effect: "NoExecute"
-      tolerationSeconds: 300
-    - key: "node.kubernetes.io/unreachable"
-      operator: "Exists"
-      effect: "NoExecute"
-      tolerationSeconds: 300
-  priority: 0
-  enableServiceLinks: true
-  preemptionPolicy: PreemptLowerPriority
-status:
-  phase: Pending
-  conditions:
-    - type: PodScheduled
-      status: 'False'
-      lastProbeTime: null
-      lastTransitionTime: '2024-10-09T11:11:19Z'
-      reason: Unschedulable
-      message: >-
-        0/7 nodes are available: 7 node(s) had untolerated taint
-        {CriticalAddonsOnly: true}. preemption: 0/7 nodes are available: 7
-        Preemption is not helpful for scheduling..
-  qosClass: BestEffort
+  # Add the rest of your spec here...
