@@ -33,6 +33,8 @@ spec:
       operator: Exists
       effect: NoExecute
       tolerationSeconds: 300
+  nodeSelector:
+    agentpool: agentpool  # Ensure this matches your node pool name
   containers:
     - name: create
       image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.4@sha256:a9f03b34a3cbfbb26d103a14046ab2c5130a80c3d69d526ff8063d2b37b9fd3f
@@ -83,8 +85,6 @@ spec:
                     fieldPath: metadata.namespace
   dnsPolicy: ClusterFirst
   enableServiceLinks: true
-  nodeSelector:
-    kubernetes.io/os: linux
   preemptionPolicy: PreemptLowerPriority
   priority: 0
   restartPolicy: OnFailure
