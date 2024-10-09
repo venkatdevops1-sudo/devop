@@ -1,81 +1,274 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: internal-ingress-nginx-controller
   namespace: ingress-nginx
+  uid: 2c0275db-588e-4b5c-b5d0-11929238b2f2
+  resourceVersion: '9411493'
+  generation: 12
+  creationTimestamp: '2024-10-09T10:19:59Z'
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+  annotations:
+    deployment.kubernetes.io/revision: '12'
+  managedFields:
+    - manager: kubectl-rollout
+      operation: Update
+      apiVersion: apps/v1
+      time: '2024-10-09T12:27:39Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:template:
+            f:metadata:
+              f:annotations:
+                .: {}
+                f:kubectl.kubernetes.io/restartedAt: {}
+    - manager: Mozilla
+      operation: Update
+      apiVersion: apps/v1
+      time: '2024-10-09T12:53:30Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:app.kubernetes.io/name: {}
+            f:app.kubernetes.io/part-of: {}
+        f:spec:
+          f:progressDeadlineSeconds: {}
+          f:replicas: {}
+          f:revisionHistoryLimit: {}
+          f:selector: {}
+          f:strategy:
+            f:rollingUpdate:
+              .: {}
+              f:maxSurge: {}
+              f:maxUnavailable: {}
+            f:type: {}
+          f:template:
+            f:metadata:
+              f:labels:
+                .: {}
+                f:app.kubernetes.io/name: {}
+                f:app.kubernetes.io/part-of: {}
+            f:spec:
+              f:containers:
+                k:{"name":"controller"}:
+                  .: {}
+                  f:args: {}
+                  f:env:
+                    .: {}
+                    k:{"name":"POD_NAME"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef: {}
+                    k:{"name":"POD_NAMESPACE"}:
+                      .: {}
+                      f:name: {}
+                      f:valueFrom:
+                        .: {}
+                        f:fieldRef: {}
+                  f:image: {}
+                  f:imagePullPolicy: {}
+                  f:name: {}
+                  f:ports:
+                    .: {}
+                    k:{"containerPort":80,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                    k:{"containerPort":443,"protocol":"TCP"}:
+                      .: {}
+                      f:containerPort: {}
+                      f:protocol: {}
+                  f:resources:
+                    .: {}
+                    f:limits:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                    f:requests:
+                      .: {}
+                      f:cpu: {}
+                      f:memory: {}
+                  f:terminationMessagePath: {}
+                  f:terminationMessagePolicy: {}
+                  f:volumeMounts:
+                    .: {}
+                    k:{"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}:
+                      .: {}
+                      f:mountPath: {}
+                      f:name: {}
+                      f:readOnly: {}
+              f:dnsPolicy: {}
+              f:nodeSelector: {}
+              f:restartPolicy: {}
+              f:schedulerName: {}
+              f:securityContext: {}
+              f:serviceAccount: {}
+              f:serviceAccountName: {}
+              f:terminationGracePeriodSeconds: {}
+              f:tolerations: {}
+              f:volumes:
+                .: {}
+                k:{"name":"kube-api-access"}:
+                  .: {}
+                  f:name: {}
+                  f:projected:
+                    .: {}
+                    f:defaultMode: {}
+                    f:sources: {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: apps/v1
+      time: '2024-10-09T12:53:32Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:deployment.kubernetes.io/revision: {}
+        f:status:
+          f:availableReplicas: {}
+          f:conditions:
+            .: {}
+            k:{"type":"Available"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+            k:{"type":"Progressing"}:
+              .: {}
+              f:lastTransitionTime: {}
+              f:lastUpdateTime: {}
+              f:message: {}
+              f:reason: {}
+              f:status: {}
+              f:type: {}
+          f:observedGeneration: {}
+          f:readyReplicas: {}
+          f:replicas: {}
+          f:unavailableReplicas: {}
+          f:updatedReplicas: {}
+      subresource: status
 spec:
-  replicas: 2  # Adjust according to your requirements
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
+      app.kubernetes.io/part-of: ingress-nginx
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+      annotations:
+        kubectl.kubernetes.io/restartedAt: '2024-10-09T17:57:47+05:30'
     spec:
-      serviceAccountName: internal-ingress-nginx  # Make sure this exists
-      nodeSelector:
-        kubernetes.io/os: linux
-        agentpool: agentpool  # Ensure this is correct
-      tolerations:
-        - key: "CriticalAddonsOnly"
-          operator: "Exists"
-          effect: "NoSchedule"
-      containers:
-      - name: controller
-        image: k8s.gcr.io/ingress-nginx/controller:v1.4.0  # Or the version you're using
-        args:
-        - /nginx-ingress-controller
-        - --ingress-class=nginx  # This ensures the controller handles the `nginx` Ingress class
-        - --configmap=$(POD_NAMESPACE)/nginx-configuration
-        - --election-id=ingress-controller-leader
-        - --publish-service=$(POD_NAMESPACE)/internal-ingress-nginx-controller
-        ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        - name: https
-          containerPort: 443
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 400m
-            memory: 400Mi
-          requests:
-            cpu: 200m
-            memory: 200Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          runAsNonRoot: true
-          runAsUser: 101
-        volumeMounts:
-        - name: webhook-cert
-          mountPath: /usr/local/certificates/
-          readOnly: true
-        - name: kube-api-access
-          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-          readOnly: true
       volumes:
-      - name: webhook-cert
-        secret:
-          secretName: internal-ingress-nginx-admission
-      - name: kube-api-access
-        projected:
-          sources:
-          - serviceAccountToken:
-              expirationSeconds: 3607
-              path: token
-          - configMap:
-              name: kube-root-ca.crt
-              items:
-              - key: ca.crt
-                path: ca.crt
-          - downwardAPI:
-              items:
-              - path: namespace
+        - name: kube-api-access
+          projected:
+            sources:
+              - serviceAccountToken:
+                  expirationSeconds: 3600
+                  path: token
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+            defaultMode: 420
+      containers:
+        - name: controller
+          image: k8s.gcr.io/ingress-nginx/controller:v1.3.0
+          args:
+            - /nginx-ingress-controller
+            - '--publish-service=$(POD_NAMESPACE)/ingress-nginx-controller'
+            - '--election-id=ingress-nginx-leader'
+            - '--controller-class=k8s.io/ingress-nginx'
+            - '--ingress-class=nginx'
+            - '--configmap=$(POD_NAMESPACE)/ingress-nginx-controller'
+            - '--validating-webhook=:8443'
+            - '--validating-webhook-certificate=/usr/local/certificates/cert'
+            - '--validating-webhook-key=/usr/local/certificates/key'
+            - '--enable-metrics=false'
+          ports:
+            - containerPort: 80
+              protocol: TCP
+            - containerPort: 443
+              protocol: TCP
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
+          resources:
+            limits:
+              cpu: 400m
+              memory: 400Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          volumeMounts:
+            - name: kube-api-access
+              readOnly: true
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        agentpool: agentpool
+      serviceAccountName: internal-ingress-nginx
+      serviceAccount: internal-ingress-nginx
+      securityContext: {}
+      schedulerName: default-scheduler
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+          effect: NoSchedule
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+status:
+  observedGeneration: 12
+  replicas: 3
+  updatedReplicas: 2
+  readyReplicas: 1
+  availableReplicas: 1
+  unavailableReplicas: 2
+  conditions:
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2024-10-09T12:53:31Z'
+      lastTransitionTime: '2024-10-09T10:19:59Z'
+      reason: ReplicaSetUpdated
+      message: >-
+        ReplicaSet "internal-ingress-nginx-controller-659b7fb799" is
+        progressing.
+    - type: Available
+      status: 'False'
+      lastUpdateTime: '2024-10-09T12:53:32Z'
+      lastTransitionTime: '2024-10-09T12:53:32Z'
+      reason: MinimumReplicasUnavailable
+      message: Deployment does not have minimum availability.
