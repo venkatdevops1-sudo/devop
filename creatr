@@ -28,92 +28,6 @@ metadata:
       blockOwnerDeletion: true
   finalizers:
     - batch.kubernetes.io/job-tracking
-  managedFields:
-    - manager: kube-controller-manager
-      operation: Update
-      apiVersion: v1
-      time: '2024-10-09T11:11:19Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:finalizers:
-            .: {}
-            v:"batch.kubernetes.io/job-tracking": {}
-          f:generateName: {}
-          f:labels:
-            .: {}
-            f:app.kubernetes.io/component: {}
-            f:app.kubernetes.io/instance: {}
-            f:app.kubernetes.io/managed-by: {}
-            f:app.kubernetes.io/name: {}
-            f:app.kubernetes.io/part-of: {}
-            f:app.kubernetes.io/version: {}
-            f:batch.kubernetes.io/controller-uid: {}
-            f:batch.kubernetes.io/job-name: {}
-            f:controller-uid: {}
-            f:helm.sh/chart: {}
-            f:job-name: {}
-          f:ownerReferences:
-            .: {}
-            k:{"uid":"806ff09a-4345-471b-810c-a86404cb4523"}: {}
-        f:spec:
-          f:containers:
-            k:{"name":"create"}:
-              .: {}
-              f:args: {}
-              f:env:
-                .: {}
-                k:{"name":"POD_NAMESPACE"}:
-                  .: {}
-                  f:name: {}
-                  f:valueFrom:
-                    .: {}
-                    f:fieldRef: {}
-              f:image: {}
-              f:imagePullPolicy: {}
-              f:name: {}
-              f:resources: {}
-              f:securityContext:
-                .: {}
-                f:allowPrivilegeEscalation: {}
-                f:capabilities:
-                  .: {}
-                  f:drop: {}
-                f:readOnlyRootFilesystem: {}
-                f:runAsNonRoot: {}
-                f:runAsUser: {}
-                f:seccompProfile:
-                  .: {}
-                  f:type: {}
-              f:terminationMessagePath: {}
-              f:terminationMessagePolicy: {}
-          f:dnsPolicy: {}
-          f:enableServiceLinks: {}
-          f:nodeSelector: {}
-          f:restartPolicy: {}
-          f:schedulerName: {}
-          f:securityContext: {}
-          f:serviceAccount: {}
-          f:serviceAccountName: {}
-          f:terminationGracePeriodSeconds: {}
-    - manager: kube-scheduler
-      operation: Update
-      apiVersion: v1
-      time: '2024-10-09T11:11:19Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:status:
-          f:conditions:
-            .: {}
-            k:{"type":"PodScheduled"}:
-              .: {}
-              f:lastProbeTime: {}
-              f:lastTransitionTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-      subresource: status
 spec:
   volumes:
     - name: kube-api-access-c9cgv
@@ -172,19 +86,22 @@ spec:
   terminationGracePeriodSeconds: 30
   dnsPolicy: ClusterFirst
   nodeSelector:
-    kubernetes.io/os: linux
+    agentpool: agentpool  # Specify the correct node selector here
   serviceAccountName: internal-ingress-ingress-nginx-admission
   serviceAccount: internal-ingress-ingress-nginx-admission
   securityContext: {}
   schedulerName: default-scheduler
   tolerations:
-    - key: node.kubernetes.io/not-ready
-      operator: Exists
-      effect: NoExecute
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node.kubernetes.io/not-ready"
+      operator: "Exists"
+      effect: "NoExecute"
       tolerationSeconds: 300
-    - key: node.kubernetes.io/unreachable
-      operator: Exists
-      effect: NoExecute
+    - key: "node.kubernetes.io/unreachable"
+      operator: "Exists"
+      effect: "NoExecute"
       tolerationSeconds: 300
   priority: 0
   enableServiceLinks: true
