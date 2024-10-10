@@ -1,0 +1,87 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: internal-ingress-nginx-controller
+  namespace: ingress-nginx
+  uid: a068dd98-e180-4b92-8d48-109b30ea49cd
+  resourceVersion: '9362025'
+  creationTimestamp: '2024-10-09T10:19:59Z'
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: 'true'
+  finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: v1
+      time: '2024-10-09T10:19:59Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:service.beta.kubernetes.io/azure-load-balancer-internal: {}
+        f:spec:
+          f:allocateLoadBalancerNodePorts: {}
+          f:externalTrafficPolicy: {}
+          f:internalTrafficPolicy: {}
+          f:ports:
+            .: {}
+            k:{"port":80,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+            k:{"port":443,"protocol":"TCP"}:
+              .: {}
+              f:name: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector: {}
+          f:sessionAffinity: {}
+          f:type: {}
+    - manager: cloud-controller-manager
+      operation: Update
+      apiVersion: v1
+      time: '2024-10-09T10:21:20Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:finalizers:
+            .: {}
+            v:"service.kubernetes.io/load-balancer-cleanup": {}
+        f:status:
+          f:loadBalancer:
+            f:ingress: {}
+      subresource: status
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30591
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+      nodePort: 30650
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+  clusterIP: 10.0.247.54
+  clusterIPs:
+    - 10.0.247.54
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  allocateLoadBalancerNodePorts: true
+  internalTrafficPolicy: Cluster
+status:
+  loadBalancer:
+    ingress:
+      - ip: 10.224.2.255
