@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: ct-ui
-        image: dfdpacr.azurecr.io/ct-ui:PLACEHOLDER_TAG
+        image: devscmct.azurecr.io/ct-ui:v1
         ports:
         - containerPort: 80
         resources:
