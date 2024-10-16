@@ -38,6 +38,6 @@ spec:
             cpu: "400m"    
             memory: "400Mi"
       imagePullSecrets:
-      - name: dfdpcred
+      - name: acr-secret
       nodeSelector:
         agentpool: agentpool
