@@ -27,7 +27,7 @@ spec:
           effect: "NoSchedule"
       containers:
       - name: ct-api
-        image: devscmct.azurecr.io/ct-api-image:v2
+        image: devscmct.azurecr.io/ct-api:v1
         ports:
         - containerPort: 8080
         env:
@@ -41,11 +41,21 @@ spec:
             secretKeyRef:
               name: cc-secrets
               key: CT_CONNECTIONTYPE
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: cc-secrets
+              key: DB_USER  
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cc-secrets
+              key: DB_PASSWORD 
         - name: Auth__ClientSecret
           valueFrom:
             secretKeyRef:
               name: cc-secrets
-              key: Auth__ClientSecret  # Make sure the updated secret is stored in cc-secrets
+              key: Auth__ClientSecret
         - name: ASPNETCORE_URLS
           value: "http://+:8080"
         - name: Auth__Provider
@@ -53,15 +63,15 @@ spec:
         - name: Auth__Protocol
           value: "JWT"
         - name: Auth__Authority
-          value: "https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/"  # New Tenant ID
+          value: "https://login.microsoftonline.com/16f5f358-437f-4d93-875b-01c41113fcf4/"
         - name: Auth__ClientId
-          value: "c052b66c-0334-4a02-bdc7-a8b601aeb2cb"  # New Client ID
+          value: "c052b66c-0334-4a02-bdc7-a8b601aeb2cb"
         - name: Auth__Audiences__0
           value: "api://c052b66c-0334-4a02-bdc7-a8b601aeb2cb"
         - name: Auth__Issuers__0
-          value: "https://sts.windows.net/16f5f358-437f-4d93-875b-01c41113fcf4/"  # New Tenant ID
+          value: "https://sts.windows.net/16f5f358-437f-4d93-875b-01c41113fcf4/"
         - name: Auth__TenantId
-          value: "16f5f358-437f-4d93-875b-01c41113fcf4"  # New Tenant ID
+          value: "16f5f358-437f-4d93-875b-01c41113fcf4"
         resources:
           requests:
             cpu: "0.2"
