@@ -21,9 +21,13 @@ spec:
         component: cc-ui
         tier: UI
     spec:
+       tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
       - name: cc-ui
-        image: 
+        image: devscmct.azurecr.io/cc-ui:v1
         ports:
         - containerPort: 80
         resources:
@@ -34,7 +38,7 @@ spec:
             cpu: "0.4"
             memory: "400Mi"
       imagePullSecrets:
-      - name: dfdpcred
+      - name: acr-secret
       nodeSelector:
         agentpool: agentpool
 ---
