@@ -1,1 +1,5 @@
 az aks get-credentials --resource-group rg-dev-SupplyChaincontroltower --name kub-dev-scm --overwrite-existing
+
+rg-dev-SupplyChaincontroltower
+
+kub-dev-scm
