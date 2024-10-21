@@ -5,7 +5,12 @@ metadata:
   namespace: command-center
   annotations:
     kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/use-private-ip: "true"
 spec:
+  tls:
+  - hosts:
+    - command-center.bigindiahub.coke.com
+    secretName: tls-secret
   rules:
   - host: command-center.bigindiahub.coke.com
     http:
