@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rca-web-service
-  namespace: syren-rca
+  namespace: command-center
 spec:
   replicas: 1
   selector:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: rca-web-service
-        image: dfdpacr.azurecr.io/rca-web-service:1.0.0
+        image: devscm
         imagePullPolicy: "IfNotPresent"
         ports:
         - containerPort: 8000
