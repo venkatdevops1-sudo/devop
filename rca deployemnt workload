@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rca-web-service
+  namespace: syren-rca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rca-web-service
+  template:
+    metadata:
+      labels:
+        app: rca-web-service
+    spec:
+      containers:
+      - name: rca-web-service
+        image: dfdpacr.azurecr.io/rca-web-service:1.0.0
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 8000
+        resources:                # Adding resource limits here
+          limits:
+            cpu: "0.5"            # Limit CPU usage to 0.5 CPU cores
+            memory: "512Mi"       # Limit memory usage to 512MiB
+          requests:
+            cpu: "0.2"            # Request 0.2 CPU cores
+            memory: "256MiB"      # Request 256MiB memory
+      nodeSelector:
+        pool: daskpool
+      imagePullSecrets:
+        - name: dfdpcred
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rca-service
+  namespace: syren-rca
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: rca-web-service
