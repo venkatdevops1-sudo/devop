@@ -4,7 +4,7 @@ metadata:
   name: rca-web-service
   namespace: command-center
 spec:
-  replicas: 1
+  replicas: 1  # Ensure this is a simple integer
   selector:
     matchLabels:
       app: rca-web-service
@@ -15,25 +15,26 @@ spec:
     spec:
       containers:
       - name: rca-web-service
-        image: devscmct.azurecr.io/rca-framework:v1
+        image: dfdpacr.azurecr.io/rca-web-service:1.0.0
         imagePullPolicy: "IfNotPresent"
         ports:
         - containerPort: 8000
-        resources:                # Adding resource limits here
+        resources:
           limits:
-            cpu: "0.5"            # Limit CPU usage to 0.5 CPU cores
-            memory: "512Mi"       # Limit memory usage to 512MiB
+            cpu: "500m"    # For CPU, "500m" means 0.5 of a CPU core
+            memory: "512Mi" # Memory needs to be specified with a unit
           requests:
-            cpu: "0.2"            # Request 0.2 CPU cores
-            memory: "256MiB"      # Request 256MiB memory
+            cpu: "200m"    # Similarly for CPU request
+            memory: "256Mi"
       nodeSelector:
-        agentpool: agentpool
+        pool: daskpool
       imagePullSecrets:
-        - name: acr-secret
+        - name: dfdpcred
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
           effect: "NoSchedule"
+
 
 apiVersion: v1
 kind: Service
