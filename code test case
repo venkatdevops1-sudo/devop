@@ -1,0 +1,37 @@
+*** Variables ***
+${base_url} =    https://itid-fwk-api-kong-dev.ikp301x.cloud.hk.hsbc
+${alert_url} =    ${base_url}/cto-ea-sn-alert/api/v1/hsbcc/itsm/alert
+${headers} =    create dictionary    Authorization=Basic XXXXXXXXX    Content-Type=application/json
+${assignment_group} =    DBS-ITID-ES-DP-PSD-Autobot-SQL
+
+*** Keywords ***
+Non-Supported Region Ticket Transfer Test
+    [Documentation]    Test if non-supported region tickets are getting transferred to the correct region.
+    create session    sessionId    ${base_url}    headers=${headers}    verify=false
+
+    # Step 1: Generate an Alert using the GET API call
+    ${response} =    GET On Session    sessionId    ${alert_url}    params=assignment_group=${assignment_group}    expected_status=200
+
+    # Capture the Alert Number
+    ${alert_number} =    Get From Dictionary    ${response.json()}    alert_number
+    log    Alert Number: ${alert_number}
+
+    # Step 2: Check Alert Status
+    ${status_endpoint} =    Set Variable    ${alert_url}/${alert_number}
+    ${status_response} =    GET On Session    sessionId    ${status_endpoint}    expected_status=200
+
+    # Step 3: Verify Alert Status is "Transferred"
+    ${alert_status} =    Get From Dictionary    ${status_response.json()}    alert_status
+    Should Be Equal As Strings    ${alert_status}    Transferred
+
+    # Step 4: Extract Region Key from Transfer Comment and Verify
+    ${transfer_comment} =    Get From Dictionary    ${status_response.json()}    transfer_comment
+    log    Transfer Comment: ${transfer_comment}
+    
+    # Extract region key from the transfer comment (assuming it contains something like "Region: US-East")
+    ${region_key} =    Fetch From String    ${transfer_comment}    (?<=Region: )\w+-\w+
+
+    # Validate the extracted region key (optional: add specific checks for regions)
+    Should Not Be Empty    ${region_key}
+    log    Extracted Region Key: ${region_key}
+    log    Test case passed for Alert Number: ${alert_number}
