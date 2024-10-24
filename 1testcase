@@ -1,0 +1,22 @@
+*** Keywords ***
+Non-Supported Region Ticket Transfer Test
+    [Documentation]    Test if non-supported region tickets are getting transferred to the correct region.
+    
+    # Step 1: Generate Alert using GET API
+    ${response} =    Generic API call    # This makes the GET call to fetch alerts.
+    
+    # Step 2: Capture the `alert_number` from the response
+    ${alert_number} =    Get From Dictionary    ${response}    alert_number
+    log    Alert Number: ${alert_number}   # This will log the dynamically fetched alert number.
+
+    # Step 3: Check Alert Status using the fetched `alert_number`
+    ${status_endpoint} =    Set Variable    ${alert_url}/${alert_number}
+    ${status_response} =    GET On Session    sessionId    ${status_endpoint}    expected_status=200
+    ${alert_status} =    Get From Dictionary    ${status_response.json()}    alert_status
+    Should Be Equal As Strings    ${alert_status}    Transferred
+
+    # Step 4: Extract and Validate Region Key
+    ${transfer_comment} =    Get From Dictionary    ${status_response.json()}    transfer_comment
+    ${region_key} =    Fetch From String    ${transfer_comment}    (?<=Region: )\w+-\w+
+    Should Not Be Empty    ${region_key}
+    log    Test passed for alert number: ${alert_number}, region: ${region_key}
